@@ -9,7 +9,7 @@
 <body>
   <h1>JS battle</h1>
 
-  <canvas id="myCanvas" width="578" height="200"></canvas>
+  <canvas id="myCanvas" width="578" height="500"></canvas>
 
   <button onclick="addPlayer()">Add player</button>
   <button onclick="start()">Start</button>
@@ -20,13 +20,13 @@
     let player1 = new Game.SamplePlayer()
     let player2 = new Game.SamplePlayer()
 
-    let c = document.getElementById("myCanvas");
-    let ctx = c.getContext("2d");
-    let drawing = new Image()
-    drawing.src = "http://localhost:8080/sand/slice33_33.png"
-    drawing.onload = function() {
-      ctx.drawImage(drawing, 0, 0, 70, 70);
-    }
+    // let c = document.getElementById("myCanvas");
+    // let ctx = c.getContext("2d");
+    // let drawing = new Image()
+    // drawing.src = "http://localhost:8080/sand/slice33_33.png"
+    // drawing.onload = function() {
+    //   ctx.drawImage(drawing, 0, 0, 70, 70);
+    // }
 
     // game.addPlayer(player1)
     // game.addPlayer(player2)

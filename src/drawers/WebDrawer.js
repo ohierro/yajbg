@@ -19,9 +19,9 @@ class WebDrawer {
       // process.stdout.write(' ' + i)
     }
     // console.log('')
-    let drawing = new Image()
-    drawing.src = "http://localhost:8080/sand/slice33_33.png"
-    this.ctx.drawImage(drawing, 0, 0, 70, 70);
+    // let drawing = new Image()
+    // drawing.src = "http://localhost:8080/sand/slice33_33.png"
+    // this.ctx.drawImage(drawing, 0, 0, 70, 70);
 
     for (let i = 0; i<this.board.length; i++) {
       for (let j = 0; j<this.board[i].length; j++) {
@@ -50,7 +50,7 @@ class WebDrawer {
           let drawing = new Image()
           drawing.src = "http://localhost:8080/sand/slice33_33.png"
           drawing.onload = () => {
-            this.ctx.drawImage(drawing,j*70+1, i*70+1, 70, 70);
+            this.ctx.drawImage(drawing,j*70+1, i*70+1, 50, 50);
           }
 
           // process.stdout.write(' # ')

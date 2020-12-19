@@ -1,9 +1,3 @@
-// class Utils {
-//   random(max) {
-//     return Math.random() * max
-//   }
-// }
-
 function randomInt(max) {
   return parseInt(Math.random() * max)
 }
@@ -19,4 +13,11 @@ function normalizeAngle(angle) {
   return angle
 }
 
-module.exports = { randomInt, normalizeAngle }
+function createMultiArray(width, height) {
+  let row = new Array(width).fill(0)
+  let array = new Array(height).fill(row)
+
+  return array
+}
+
+module.exports = { randomInt, normalizeAngle, createMultiArray }
