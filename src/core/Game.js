@@ -31,6 +31,8 @@ class Game {
   }
 
   init() {
+    console.log('GAME INIT')
+
     this.players.forEach(p => p.doInit(
       Utils.randomInt(this.board.length),
       Utils.randomInt(this.board.length),
@@ -41,6 +43,8 @@ class Game {
   }
 
   async start() {
+    console.log('GAME START')
+
     while (!this.ended) {
       this.turn()
 

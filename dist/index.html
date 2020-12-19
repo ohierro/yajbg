@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./bundle.js"></script>
+</head>
+<body>
+  <h1>JS battle</h1>
+
+  <canvas id="myCanvas" width="578" height="200"></canvas>
+
+  <button onclick="addPlayer()">Add player</button>
+  <button onclick="start()">Start</button>
+
+  <script>
+    let drawer = new Game.WebDrawer()
+    let game = new Game.Game(drawer)
+    let player1 = new Game.SamplePlayer()
+    let player2 = new Game.SamplePlayer()
+
+    let c = document.getElementById("myCanvas");
+    let ctx = c.getContext("2d");
+    let drawing = new Image()
+    drawing.src = "http://localhost:8080/sand/slice33_33.png"
+    drawing.onload = function() {
+      ctx.drawImage(drawing, 0, 0, 70, 70);
+    }
+
+    // game.addPlayer(player1)
+    // game.addPlayer(player2)
+    // game.start()
+
+    function addPlayer() {
+      let player = new Game.SamplePlayer()
+      game.addPlayer(player)
+    }
+
+    function start() {
+      game.init()
+      game.start()
+    }
+
+  </script>
+
+</body>
+</html>

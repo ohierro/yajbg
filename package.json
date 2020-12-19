@@ -5,8 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index",
+    "start:web": "watchify src/web.js -d -s Game -o dist/bundle.js & live-server dist",
+    "start:beefy": "beefy src/web.js 8080",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "beefy": "^2.1.8",
+    "browserify": "^17.0.0",
+    "watchify": "^3.11.1"
+  }
 }

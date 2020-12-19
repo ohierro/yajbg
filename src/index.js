@@ -16,3 +16,7 @@ game.init()
 
 // start
 game.start()
+
+// const Game = require('./core/Game.js')
+
+// module.exports = Game
