@@ -9,7 +9,8 @@
     "start:beefy": "beefy src/web.js 8080",
     "test": "echo \"Error: no test specified\" && exit 1",
     "browserify": "browserify src/web.js -d -s Game -o tmp/bundle.js",
-    "live:dev": "npm run browserify & gulp liveDev & live-server build"
+    "live:dev": "npm run browserify & gulp liveDev & live-server build",
+    "live:dev:v2": "gulp js"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +19,13 @@
     "browserify": "^17.0.0",
     "gulp": "^4.0.2",
     "gulp-browserify": "^0.5.1",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulplog": "^1.0.0",
+    "lodash": "^4.17.20",
+    "lodash.assign": "^4.2.0",
     "merge-stream": "^2.0.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.1"
   }
 }
