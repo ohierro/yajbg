@@ -22,6 +22,7 @@ class WebDrawer {
     // let drawing = new Image()
     // drawing.src = "http://localhost:8080/sand/slice33_33.png"
     // this.ctx.drawImage(drawing, 0, 0, 70, 70);
+    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height)
 
     for (let i = 0; i<this.board.length; i++) {
       for (let j = 0; j<this.board[i].length; j++) {
@@ -31,6 +32,12 @@ class WebDrawer {
           this.ctx.fillStyle = "#00FF00"
           // this.ctx.fillRect(j*10+1, i*10+1, 8, 8 )
           // this.ctx.drawImage(drawing,j*70, i*70, 70, 70);
+
+          let drawing = new Image()
+          drawing.src = "http://localhost:8080/img/players/tank.png"
+          drawing.onload = () => {
+            this.ctx.drawImage(drawing,j*70+1, i*70+1, 50, 50);
+          }
 
           if (player.angle === 0) {
             // process.stdout.write(' > ')
@@ -48,7 +55,7 @@ class WebDrawer {
           this.ctx.fillStyle = "#FF0000"
           // this.ctx.fillRect(j*10+1, i*10+1, 8, 8 )
           let drawing = new Image()
-          drawing.src = "http://localhost:8080/sand/slice33_33.png"
+          drawing.src = "http://localhost:8080/img/sand/slice33_33.png"
           drawing.onload = () => {
             this.ctx.drawImage(drawing,j*70+1, i*70+1, 50, 50);
           }
