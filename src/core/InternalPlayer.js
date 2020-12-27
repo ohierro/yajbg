@@ -1,5 +1,6 @@
 const { Control, Operations } = require('./Control')
 const Utils = require('../utils/Utils')
+const Misile = require('./Misile')
 
 class InternalPlayer {
   constructor(player, width, height, logger) {
@@ -39,9 +40,15 @@ class InternalPlayer {
         this.logger.debug('ROTATE operation');
         this.rotate(control)
         break;
+      case Operations.SHOOT:
+        debugger
+        this.logger.debug('SHOOT operation')
+        return new Misile(this.x, this.y, this.angle, 1, this.width, this.height)
       default:
         this.logger.debug('NOOP')
     }
+
+    return null;
   }
 
   rotate(control) {

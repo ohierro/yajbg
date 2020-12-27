@@ -22,6 +22,13 @@
   <button onclick="addPlayer()">Add player</button>
   <button onclick="start()">Start</button>
 
+  <div>
+    <button onclick="init()">Init</button>
+    <button onclick="nextFrame()">Next</button>
+    <button onclick="play()">Play</button>
+    <button onclick="stop()">Stop</button>
+  </div>
+
   <textarea id="log"></textarea>
 
   <script>
@@ -41,6 +48,30 @@
       game.init()
       game.start()
     }
+
+    let interval = null
+    function init() {
+      game.init()
+    }
+    function nextFrame() {
+      console.log('nextFrame')
+      game.nextTick()
+    }
+    function play() {
+      if (interval === null) {
+        console.log('set interval')
+        interval = setInterval(() => nextFrame(), 1500)
+      }
+    }
+    function stop() {
+      clearInterval(interval)
+      interval = null
+    }
+
+    let player = new Game.SamplePlayer()
+    game.addPlayer(player)
+    init()
+    play()
 
   </script>
 </body>

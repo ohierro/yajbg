@@ -2,11 +2,14 @@
 const InternalPlayer = require('./InternalPlayer')
 const Utils = require('../utils/Utils')
 const SamplePlayer = require('../players/sample-player')
+const GameSnapshot = require('./GameSnapshot.js')
 
 class Game {
   constructor(drawer, logger) {
     this.players = []
     this.board = Utils.createMultiArray(8,5)
+    this.objects = []
+
     this.drawer = drawer
     this.logger = logger
     this.paused = false
@@ -21,7 +24,7 @@ class Game {
   }
 
   init() {
-    console.log('GAME INIT')
+    this.logger.info('GAME INIT')
 
     this.players.forEach(p => p.doInit(
       Utils.randomInt(this.board.length),
@@ -29,7 +32,7 @@ class Game {
       100
     ))
 
-    this.drawer.init(this.players, this.board)
+    this.drawer.init(this.players, this.board, this.objects)
   }
 
   async start() {
@@ -46,6 +49,16 @@ class Game {
     }
   }
 
+  nextTick() {
+    this.logger.debug(`TURN ${this.turnNumber}`)
+
+    this.turn()
+
+    this.logger.debug(`OBJECTS ${this.objects}`)
+
+    this.turnNumber++
+  }
+
   sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
@@ -57,9 +70,17 @@ class Game {
   }
 
   turn() {
-    this.players.forEach(p => p.doTurn())
+    this.objects = []
 
-    this.drawer.draw()
+    this.players.forEach(p => {
+      let result = p.doTurn()
+
+      if (result !== null) {
+        this.objects.push(result)
+      }
+    })
+
+    this.drawer.draw2(new GameSnapshot(this.players, this.board, this.objects))
   }
 }
 

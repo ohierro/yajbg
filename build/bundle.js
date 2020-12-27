@@ -2,7 +2,8 @@
 const Operations = {
   NONE: 'none',
   MOVE: 'move',
-  ROTATE: 'rotate'
+  ROTATE: 'rotate',
+  SHOOT: 'shoot'
 }
 
 class Control {
@@ -22,6 +23,10 @@ class Control {
     this.angle += angle
     this.operation = Operations.ROTATE
   }
+
+  shoot() {
+    this.operation = Operations.SHOOT
+  }
 }
 
 module.exports = {
@@ -32,11 +37,14 @@ module.exports = {
 const InternalPlayer = require('./InternalPlayer')
 const Utils = require('../utils/Utils')
 const SamplePlayer = require('../players/sample-player')
+const GameSnapshot = require('./GameSnapshot.js')
 
 class Game {
   constructor(drawer, logger) {
     this.players = []
     this.board = Utils.createMultiArray(8,5)
+    this.objects = []
+
     this.drawer = drawer
     this.logger = logger
     this.paused = false
@@ -51,7 +59,7 @@ class Game {
   }
 
   init() {
-    console.log('GAME INIT')
+    this.logger.info('GAME INIT')
 
     this.players.forEach(p => p.doInit(
       Utils.randomInt(this.board.length),
@@ -59,7 +67,7 @@ class Game {
       100
     ))
 
-    this.drawer.init(this.players, this.board)
+    this.drawer.init(this.players, this.board, this.objects)
   }
 
   async start() {
@@ -76,6 +84,16 @@ class Game {
     }
   }
 
+  nextTick() {
+    this.logger.debug(`TURN ${this.turnNumber}`)
+
+    this.turn()
+
+    this.logger.debug(`OBJECTS ${this.objects}`)
+
+    this.turnNumber++
+  }
+
   sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
@@ -87,16 +105,35 @@ class Game {
   }
 
   turn() {
-    this.players.forEach(p => p.doTurn())
+    this.objects = []
 
-    this.drawer.draw()
+    this.players.forEach(p => {
+      let result = p.doTurn()
+
+      if (result !== null) {
+        this.objects.push(result)
+      }
+    })
+
+    this.drawer.draw2(new GameSnapshot(this.players, this.board, this.objects))
   }
 }
 
 module.exports = Game
-},{"../players/sample-player":6,"../utils/Utils":7,"./InternalPlayer":3}],3:[function(require,module,exports){
+},{"../players/sample-player":8,"../utils/Utils":9,"./GameSnapshot.js":3,"./InternalPlayer":4}],3:[function(require,module,exports){
+class GameSnapshot {
+  constructor(players, board, objects) {
+    this.players = players
+    this.board = board
+    this.objects = objects
+  }
+}
+
+module.exports = GameSnapshot
+},{}],4:[function(require,module,exports){
 const { Control, Operations } = require('./Control')
 const Utils = require('../utils/Utils')
+const Misile = require('./Misile')
 
 class InternalPlayer {
   constructor(player, width, height, logger) {
@@ -136,9 +173,15 @@ class InternalPlayer {
         this.logger.debug('ROTATE operation');
         this.rotate(control)
         break;
+      case Operations.SHOOT:
+        debugger
+        this.logger.debug('SHOOT operation')
+        return new Misile(this.x, this.y, this.angle, 1, this.width, this.height)
       default:
         this.logger.debug('NOOP')
     }
+
+    return null;
   }
 
   rotate(control) {
@@ -178,32 +221,142 @@ class InternalPlayer {
 }
 
 module.exports = InternalPlayer
-},{"../utils/Utils":7,"./Control":1}],4:[function(require,module,exports){
+},{"../utils/Utils":9,"./Control":1,"./Misile":5}],5:[function(require,module,exports){
+class Misile {
+  constructor(x, y, angle, velocity, width, height) {
+    this.x = x
+    this.y = y
+    this.angle = angle
+    this.velocity = velocity
+    this.width = width
+    this.height = height
+  }
+
+  calculatePath() {
+    let path = []
+
+    if (this.angle === 0) {
+      let currentX = this.x
+
+      while (currentX < width) {
+        path.push({ x: currentX, y })
+        currentX++
+      }
+    }
+    if (this.angle === 90) {
+      let currentY = this.y
+
+      while (currentY > 0) {
+        path.push({ x, y: currentY })
+        currentY--
+      }
+    }
+    if (this.angle === 180) {
+      let currentX = this.x
+
+      while (currentX > 0) {
+        path.push({ x: currentX, y })
+        currentX--
+      }
+    }
+    if (this.angle === 270) {
+      let currentY = this.y
+
+      while (currentY < height) {
+        path.push({ x, y: currentY })
+        currentY++
+      }
+    }
+
+
+  }
+}
+
+module.exports = Misile
+},{}],6:[function(require,module,exports){
+const GameSnapshot = require('../core/GameSnapshot.js')
+
 class WebDrawer {
   constructor(players, board) {
     this.board = null
     this.players = null
+    this.objects = null
 
     // TODO: externalize this
     this.c = document.getElementById("myCanvas");
     this.ctx = this.c.getContext("2d");
   }
 
-  init(players, board) {
+  init(players, board, objects) {
     this.board = board
     this.players = players
+    this.objects = objects
   }
 
   draw() {
-    // console.clear()
-    for (let i = 0; i<this.board[0].length; i++) {
-      // process.stdout.write(' ' + i)
-    }
-    // console.log('')
-    // let drawing = new Image()
-    // drawing.src = "http://localhost:8080/sand/slice33_33.png"
-    // this.ctx.drawImage(drawing, 0, 0, 70, 70);
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height)
+
+    if (this.objects !== null) {
+      this.objects.forEach(object => {
+        if (typeof object === 'Misile') {
+          console.log('FOUND MISILE!!')
+        }
+      })
+    }
+
+    for (let i = 0; i<this.board.length; i++) {
+      for (let j = 0; j<this.board[i].length; j++) {
+        // console.log(' # ')
+        let player = this.anyPlayer(j, i)
+        if (player) {
+          this.ctx.fillStyle = "#00FF00"
+          // this.ctx.fillRect(j*10+1, i*10+1, 8, 8 )
+          // this.ctx.drawImage(drawing,j*70, i*70, 70, 70);
+
+          let drawing = new Image()
+          drawing.src = "http://localhost:8080/img/players/tank.png"
+          drawing.onload = () => {
+            this.ctx.drawImage(drawing,j*70+1, i*70+1, 20, 20);
+          }
+
+          if (player.angle === 0) {
+            // process.stdout.write(' > ')
+          }
+          if (player.angle === 90) {
+            // process.stdout.write(' ^ ')
+          }
+          if (player.angle === 180) {
+            // process.stdout.write(' < ')
+          }
+          if (player.angle === 270) {
+            // process.stdout.write(' v ')
+          }
+        } else {
+          this.ctx.fillStyle = "#FF0000"
+          // this.ctx.fillRect(j*10+1, i*10+1, 8, 8 )
+          let drawing = new Image()
+          drawing.src = "http://localhost:8080/img/sand/slice33_33.png"
+          drawing.onload = () => {
+            this.ctx.drawImage(drawing,j*70+1, i*70+1, 50, 50);
+          }
+
+          // process.stdout.write(' # ')
+        }
+      }
+      // console.log('')
+    }
+  }
+
+  draw2(gameSnapshot) {
+    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height)
+
+    if (gameSnapshot.objects !== null && gameSnapshot.objects.length > 0) {
+      gameSnapshot.objects.forEach(object => {
+        if (typeof object === 'Misile') {
+          console.log('FOUND MISILE!!')
+        }
+      })
+    }
 
     for (let i = 0; i<this.board.length; i++) {
       for (let j = 0; j<this.board[i].length; j++) {
@@ -254,7 +407,7 @@ class WebDrawer {
 }
 
 module.exports = WebDrawer
-},{}],5:[function(require,module,exports){
+},{"../core/GameSnapshot.js":3}],7:[function(require,module,exports){
 const INFO = 3
 const DEBUG = 2
 
@@ -283,7 +436,7 @@ class Logger {
 }
 
 module.exports = Logger
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 const Utils = require('../utils/Utils')
 
 class SamplePlayer {
@@ -301,7 +454,7 @@ class SamplePlayer {
     if (this.turnNumber % 4 === 0) {
       control.rotate(90)
     } else {
-      control.move(1)
+      control.shoot()
     }
 
     this.turnNumber++
@@ -309,7 +462,7 @@ class SamplePlayer {
 }
 
 module.exports = SamplePlayer
-},{"../utils/Utils":7}],7:[function(require,module,exports){
+},{"../utils/Utils":9}],9:[function(require,module,exports){
 function randomInt(max) {
   return parseInt(Math.random() * max)
 }
@@ -333,7 +486,7 @@ function createMultiArray(width, height) {
 }
 
 module.exports = { randomInt, normalizeAngle, createMultiArray }
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const Game = require('./core/Game.js')
 const WebDrawer = require('./drawers/WebDrawer.js')
 const SamplePlayer = require('./players/sample-player.js')
@@ -362,7 +515,7 @@ module.exports = { Game, WebDrawer, SamplePlayer, Logger }
 // exports.Game = require('./core/Game.js')
 
 
-},{"./core/Game.js":2,"./drawers/WebDrawer.js":4,"./log/Logger.js":5,"./players/sample-player.js":6}]},{},[8])(8)
+},{"./core/Game.js":2,"./drawers/WebDrawer.js":6,"./log/Logger.js":7,"./players/sample-player.js":8}]},{},[10])(10)
 });
 
 //# sourceMappingURL=bundle.js.map

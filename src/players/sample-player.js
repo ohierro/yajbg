@@ -15,7 +15,7 @@ class SamplePlayer {
     if (this.turnNumber % 4 === 0) {
       control.rotate(90)
     } else {
-      control.move(1)
+      control.shoot()
     }
 
     this.turnNumber++

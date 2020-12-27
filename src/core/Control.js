@@ -1,7 +1,8 @@
 const Operations = {
   NONE: 'none',
   MOVE: 'move',
-  ROTATE: 'rotate'
+  ROTATE: 'rotate',
+  SHOOT: 'shoot'
 }
 
 class Control {
@@ -20,6 +21,10 @@ class Control {
   rotate(angle) {
     this.angle += angle
     this.operation = Operations.ROTATE
+  }
+
+  shoot() {
+    this.operation = Operations.SHOOT
   }
 }
 
