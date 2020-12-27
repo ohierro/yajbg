@@ -2,7 +2,7 @@ const { Control, Operations } = require('./Control')
 const Utils = require('../utils/Utils')
 
 class InternalPlayer {
-  constructor(player, width, height) {
+  constructor(player, width, height, logger) {
     this.x = 0
     this.y = 0
     this.angle = 0
@@ -10,6 +10,7 @@ class InternalPlayer {
     this.width = width
     this.height = height
     this.player = player
+    this.logger = logger
   }
 
   doInit(x, y, life) {
@@ -23,23 +24,23 @@ class InternalPlayer {
     let control = new Control()
     this.player.turn(control)
 
-    console.log(`CONTROL ${JSON.stringify(control)}`)
-    console.log(`PLAYER ${JSON.stringify(this)}`)
+    this.logger.debug(`CONTROL ${JSON.stringify(control)}`)
+    this.logger.debug(`PLAYER ${JSON.stringify(this)}`)
 
     switch(control.operation) {
       case Operations.NONE:
-        console.log('NONE operation');
+        this.logger.debug('NONE operation');
         break;
       case Operations.MOVE:
-        console.log('MOVE operation');
+        this.logger.debug('MOVE operation');
         this.move(control)
         break;
       case Operations.ROTATE:
-        console.log('ROTATE operation');
+        this.logger.debug('ROTATE operation');
         this.rotate(control)
         break;
       default:
-        console.log('NOOP')
+        this.logger.debug('NOOP')
     }
   }
 

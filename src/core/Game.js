@@ -4,10 +4,11 @@ const Utils = require('../utils/Utils')
 const SamplePlayer = require('../players/sample-player')
 
 class Game {
-  constructor(drawer) {
+  constructor(drawer, logger) {
     this.players = []
     this.board = Utils.createMultiArray(8,5)
     this.drawer = drawer
+    this.logger = logger
     this.paused = false
     this.ended = false
     this.turnNumber = 0
@@ -15,7 +16,7 @@ class Game {
 
   addPlayer(player) {
     this.players.push(
-      new InternalPlayer(player, this.board[0].length, this.board.length)
+      new InternalPlayer(player, this.board[0].length, this.board.length, this.logger)
     )
   }
 

@@ -7,30 +7,30 @@
   <script src="./bundle.js"></script>
 </head>
 <body>
-  <h1>JS battle</h1>
+  <style>
+    #log {
+      width: 600px;
+      height: 400px;
+    }    
+  </style>
+
+
+  <h1>JS battle v1.3</h1>
 
   <canvas id="myCanvas" width="578" height="500"></canvas>
 
   <button onclick="addPlayer()">Add player</button>
   <button onclick="start()">Start</button>
 
+  <textarea id="log"></textarea>
+
   <script>
     let drawer = new Game.WebDrawer()
-    let game = new Game.Game(drawer)
+    let logger = new Game.Logger('log', Game.Logger.DEBUG)
+    let game = new Game.Game(drawer, logger)
+
     let player1 = new Game.SamplePlayer()
     let player2 = new Game.SamplePlayer()
-
-    // let c = document.getElementById("myCanvas");
-    // let ctx = c.getContext("2d");
-    // let drawing = new Image()
-    // drawing.src = "http://localhost:8080/sand/slice33_33.png"
-    // drawing.onload = function() {
-    //   ctx.drawImage(drawing, 0, 0, 70, 70);
-    // }
-
-    // game.addPlayer(player1)
-    // game.addPlayer(player2)
-    // game.start()
 
     function addPlayer() {
       let player = new Game.SamplePlayer()
@@ -43,6 +43,5 @@
     }
 
   </script>
-
 </body>
 </html>

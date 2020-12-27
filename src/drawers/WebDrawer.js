@@ -36,7 +36,7 @@ class WebDrawer {
           let drawing = new Image()
           drawing.src = "http://localhost:8080/img/players/tank.png"
           drawing.onload = () => {
-            this.ctx.drawImage(drawing,j*70+1, i*70+1, 50, 50);
+            this.ctx.drawImage(drawing,j*70+1, i*70+1, 20, 20);
           }
 
           if (player.angle === 0) {
