@@ -1,5 +1,13 @@
+const { random } = require("lodash")
+
 function randomInt(max) {
   return parseInt(Math.random() * max)
+}
+
+function randomItem(list) {
+  index = randomInt(list.length)
+
+  return list[index]
 }
 
 function normalizeAngle(angle) {

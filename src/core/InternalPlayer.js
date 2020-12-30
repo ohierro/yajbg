@@ -41,7 +41,6 @@ class InternalPlayer {
         this.rotate(control)
         break;
       case Operations.SHOOT:
-        debugger
         this.logger.debug('SHOOT operation')
         return new Misile(this.x, this.y, this.angle, 1, this.width, this.height)
       default:

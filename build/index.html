@@ -11,13 +11,14 @@
     #log {
       width: 600px;
       height: 400px;
-    }    
+    }
   </style>
 
 
   <h1>JS battle v1.3</h1>
 
   <canvas id="myCanvas" width="578" height="500"></canvas>
+  <div id="playersDiv"></div>
 
   <button onclick="addPlayer()">Add player</button>
   <button onclick="start()">Start</button>
@@ -30,6 +31,7 @@
   </div>
 
   <textarea id="log"></textarea>
+  <textarea id="players"></textarea>
 
   <script>
     let drawer = new Game.WebDrawer()
@@ -56,11 +58,13 @@
     function nextFrame() {
       console.log('nextFrame')
       game.nextTick()
+      document.getElementById('playersDiv').innerHTML = JSON.stringify(game.players)
     }
+
     function play() {
       if (interval === null) {
         console.log('set interval')
-        interval = setInterval(() => nextFrame(), 1500)
+        interval = setInterval(() => nextFrame(), 500)
       }
     }
     function stop() {
@@ -68,10 +72,14 @@
       interval = null
     }
 
-    let player = new Game.SamplePlayer()
+    let player = new Game.SamplePlayer('Sample player')
     game.addPlayer(player)
+
+    player = new Game.StaticPlayer('Static player')
+    game.addPlayer(player)
+
     init()
-    play()
+    // play()
 
   </script>
 </body>

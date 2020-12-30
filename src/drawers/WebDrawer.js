@@ -1,4 +1,6 @@
 const GameSnapshot = require('../core/GameSnapshot.js')
+const Misile = require('../core/Misile.js')
+const Explossion = require('../core/objects/Explossion.js')
 
 class WebDrawer {
   constructor(players, board) {
@@ -74,14 +76,6 @@ class WebDrawer {
   draw2(gameSnapshot) {
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height)
 
-    if (gameSnapshot.objects !== null && gameSnapshot.objects.length > 0) {
-      gameSnapshot.objects.forEach(object => {
-        if (typeof object === 'Misile') {
-          console.log('FOUND MISILE!!')
-        }
-      })
-    }
-
     for (let i = 0; i<this.board.length; i++) {
       for (let j = 0; j<this.board[i].length; j++) {
         // console.log(' # ')
@@ -123,6 +117,33 @@ class WebDrawer {
       }
       // console.log('')
     }
+
+    if (gameSnapshot.objects !== null && gameSnapshot.objects.length > 0) {
+      gameSnapshot.objects.forEach(object => {
+        debugger
+        if (typeof object === 'Misile') {
+          console.log('FOUND MISILE!!')
+        }
+        if (object instanceof Misile) {
+          let drawing = new Image()
+          drawing.src = "http://localhost:8080/img/misile.jpeg"
+          drawing.onload = () => {
+            this.ctx.drawImage(drawing,object.x * 70 , object.y * 70, 20, 20);
+          }
+        }
+        if (object instanceof Explossion) {
+          let drawing = new Image()
+          drawing.src = "http://localhost:8080/img/explossion.jpg"
+          drawing.onload = () => {
+            this.ctx.drawImage(drawing,object.x * 70 , object.y * 70, 20, 20);
+          }
+        }
+      })
+    }
+  }
+
+  animate(misile) {
+
   }
 
   anyPlayer(x, y) {

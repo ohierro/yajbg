@@ -1,6 +1,6 @@
 class StaticPlayer {
-  constructor() {
-
+  constructor(name) {
+    this.name = name
   }
 
   init() {
@@ -8,7 +8,11 @@ class StaticPlayer {
   }
 
   turn() {
-    console.log(`turn`)
+    // if (this.turnNumber % 4 === 0) {
+    //   control.rotate(90)
+    // } else {
+    //   control.move(1)
+    // }
   }
 }
 

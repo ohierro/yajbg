@@ -3,6 +3,8 @@ const InternalPlayer = require('./InternalPlayer')
 const Utils = require('../utils/Utils')
 const SamplePlayer = require('../players/sample-player')
 const GameSnapshot = require('./GameSnapshot.js')
+const Misile = require('./Misile')
+const Explossion = require('./objects/Explossion')
 
 class Game {
   constructor(drawer, logger) {
@@ -26,11 +28,19 @@ class Game {
   init() {
     this.logger.info('GAME INIT')
 
-    this.players.forEach(p => p.doInit(
-      Utils.randomInt(this.board.length),
-      Utils.randomInt(this.board.length),
-      100
-    ))
+    this.objects = []
+
+    this.players.forEach(p => {
+      // p.doInit(
+      // Utils.randomInt(this.board.length),
+      // Utils.randomInt(this.board.length),
+      // 100)
+      if (p.player instanceof SamplePlayer) {
+        p.doInit(3,3,100)
+      } else {
+        p.doInit(1,3,100)
+      }
+    })
 
     this.drawer.init(this.players, this.board, this.objects)
   }
@@ -70,8 +80,7 @@ class Game {
   }
 
   turn() {
-    this.objects = []
-
+    // some previous shuffle??
     this.players.forEach(p => {
       let result = p.doTurn()
 
@@ -79,6 +88,26 @@ class Game {
         this.objects.push(result)
       }
     })
+
+    // objects iterations
+    let nextGenObjects = []
+    for (let i = 0; i<this.objects.length; i++) {
+
+      if (this.objects[i].doTurn(this) != -1) {
+        nextGenObjects.push(this.objects[i])
+      }
+    }
+    this.objects = nextGenObjects
+
+    // check players health
+    for (let i = 0; i<this.players.length; i++) {
+      let player = this.players[i]
+
+      if (player.life <= 0) {
+        this.logger.info(`Player ${player.name} has DIED!!`)
+        this.objects.push(new Explossion(player.x, player.y))
+      }
+    }
 
     this.drawer.draw2(new GameSnapshot(this.players, this.board, this.objects))
   }

@@ -1,6 +1,7 @@
 const Game = require('./core/Game.js')
 const WebDrawer = require('./drawers/WebDrawer.js')
 const SamplePlayer = require('./players/sample-player.js')
+const StaticPlayer = require('./players/static-player.js')
 const Logger = require('./log/Logger.js')
 
 // console.log('Started...')
@@ -17,7 +18,7 @@ const Logger = require('./log/Logger.js')
 // // start
 // game.start()
 
-module.exports = { Game, WebDrawer, SamplePlayer, Logger }
+module.exports = { Game, WebDrawer, SamplePlayer, StaticPlayer, Logger }
 
 // module.exports = {
 //   Game: require('./core/Game.js')
